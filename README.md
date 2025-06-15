@@ -10,7 +10,7 @@ The goal is to keep users up to date on key financial developments — without r
 
 - AI-generated article summaries (summarizied by Gemini Flash)
 
-- Email delivery via SmtpClient
+- Email delivery via MailKit
 
 ## Built with clean architecture and asynchronous C# practices
 
@@ -23,7 +23,14 @@ C# (.NET)
 
 - HttpClient for data fetching
 
-- SmtpClient for email sending
+- MailKit for email sending
 
 - Gemini Flash integration
 
+
+## Architectural Choices
+
+Typically, I prefer built-in solutions, however, after conducting research I made following decisions:
+
+- Picked Handfire over System.Timers for retry support
+- Picked MailKit instead of SmtpClient as SmtpClient is becoming obsolete
