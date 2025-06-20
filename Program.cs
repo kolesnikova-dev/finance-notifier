@@ -17,7 +17,7 @@ public class Program
                             .UseRecommendedSerializerSettings()
                             .UseSqlServerStorage(dbConn);
 
-        BackgroundJob.Enqueue(() => Console.WriteLine("Hello, world!".Pastel(Color.Blue)));
+        BackgroundJob.Enqueue(() => Start());
         // each week on sunday at 6am of New Jersey time run a job:
 
         // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
@@ -32,9 +32,6 @@ public class Program
         // keep server running until it is manually stopped
         using (var server = new BackgroundJobServer())
         {
-            Console.WriteLine("===========================".Pastel(Color.DarkBlue));
-            Console.WriteLine("Hangfire Server started.\nPress Enter to exit...".Pastel(Color.DarkBlue));
-            Console.WriteLine("===========================".Pastel(Color.DarkBlue));
             Console.ReadLine();
         }
     }
@@ -49,5 +46,12 @@ public class Program
         }
 
         return dbConn;
+    }
+
+    public static void Start()
+    {
+        Console.WriteLine("===========================".Pastel(Color.DarkBlue));
+        Console.WriteLine("Hangfire Server started.\nPress Enter to exit...".Pastel(Color.DarkBlue));
+        Console.WriteLine("===========================".Pastel(Color.DarkBlue));
     }
 }
