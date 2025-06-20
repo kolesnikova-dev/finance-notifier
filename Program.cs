@@ -5,7 +5,7 @@ using Pastel;
 
 public class Program
 {
-    public static readonly List<string> scrapeUrls = ["", ""];
+    public static readonly List<string> scrapeUrls = ["https://www.pgim.com/us/en/institutional/about-us/newsroom/press-releases"];
 
     public static void Main(string[] args)
     {
