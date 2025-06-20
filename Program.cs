@@ -17,8 +17,12 @@ public class Program
                             .UseRecommendedSerializerSettings()
                             .UseSqlServerStorage(dbConn);
 
+        DataScraperFormatter scraperFormatter = new(scrapeUrls);
+        // Print starting log
         BackgroundJob.Enqueue(() => Start());
-        // each week on sunday at 6am of New Jersey time run a job:
+        // Each week on Sunday at 6AM run a job:
+        RecurringJob.AddOrUpdate("scrape", () => scraperFormatter.Scrape(), "0 6 * * SUN");
+        
 
         // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
         // get information
