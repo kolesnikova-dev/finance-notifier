@@ -17,14 +17,10 @@ public class Program
                             .UseRecommendedSerializerSettings()
                             .UseSqlServerStorage(dbConn);
 
-
-        // Print starting log
-        BackgroundJob.Enqueue(() => Start());
         // Each week on Sunday at 6AM run a job:
         // RecurringJob.AddOrUpdate("scrape", () => scraperFormatter.Scrape(), "0 6 * * SUN");
         BackgroundJob.Enqueue(() => RunRecurringJob());
         
-
         // keep server running until it is manually stopped
         using (var server = new BackgroundJobServer())
         {
@@ -32,8 +28,12 @@ public class Program
         }
     }
 
-    private static async Task RunRecurringJob()
+    public static async Task RunRecurringJob()
     {
+
+        // Print starting log
+        Start();
+
         // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
         // get information
         DataScraperFormatter scraperFormatter = new(scrapeUrls);
