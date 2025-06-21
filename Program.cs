@@ -39,6 +39,8 @@ public class Program
         DataScraperFormatter scraperFormatter = new(scrapeUrls);
         Dictionary<string, string> data = await scraperFormatter.Scrape();
 
+        Console.WriteLine("Data received: ");
+        Console.WriteLine(data);
         // 2) pass the httpClient and the formatted data into GeminiFlashSummarizer
         // get information
 
