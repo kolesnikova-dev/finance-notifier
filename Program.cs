@@ -17,27 +17,32 @@ public class Program
                             .UseRecommendedSerializerSettings()
                             .UseSqlServerStorage(dbConn);
 
-        DataScraperFormatter scraperFormatter = new(scrapeUrls);
+
         // Print starting log
         BackgroundJob.Enqueue(() => Start());
         // Each week on Sunday at 6AM run a job:
-        RecurringJob.AddOrUpdate("scrape", () => scraperFormatter.Scrape(), "0 6 * * SUN");
+        // RecurringJob.AddOrUpdate("scrape", () => scraperFormatter.Scrape(), "0 6 * * SUN");
+        BackgroundJob.Enqueue(() => RunRecurringJob());
         
-
-        // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
-        // get information
-
-        // 2) pass the httpClient and the formatted data into GeminiFlashSummarizer
-        // get information
-
-        // 3) pass into emailSender
-
 
         // keep server running until it is manually stopped
         using (var server = new BackgroundJobServer())
         {
             Console.ReadLine();
         }
+    }
+
+    private static async Task RunRecurringJob()
+    {
+        // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
+        // get information
+        DataScraperFormatter scraperFormatter = new(scrapeUrls);
+        Dictionary<string, string> data = await scraperFormatter.Scrape();
+
+        // 2) pass the httpClient and the formatted data into GeminiFlashSummarizer
+        // get information
+
+        // 3) pass into emailSender
     }
 
     private static string? LoadEnv()
