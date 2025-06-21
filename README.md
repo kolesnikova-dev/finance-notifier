@@ -6,11 +6,11 @@ The goal is to keep users up to date on key financial developments — without r
 ## Features
 - Scheduled weekly scraping job (every Sunday at 6AM EST)
 
-- Concurrent web scraping using HttpClient and HtmlAgilityPack
+- Concurrent web scraping using `HttpClient` and `HtmlAgilityPack`
 
-- AI-generated article summaries (summarizied by Gemini Flash)
+- AI-generated article summaries (summarizied by `Gemini Flash`)
 
-- Email delivery via MailKit
+- Email delivery via `MailKit`
 
 ## Built with clean architecture and asynchronous C# practices
 
@@ -19,18 +19,18 @@ C# (.NET)
 
 - `Hangfire` for reliable background scheduling
 
-- HtmlAgilityPack for HTML parsing
+- `HtmlAgilityPack` for HTML parsing
 
-- HttpClient for data fetching
+- `HttpClient` for data fetching
 
-- MailKit for email sending
+- `MailKit` for email sending
 
-- Gemini Flash integration
+- `Gemini Flash` integration
 
 
 ## Architectural Choices
 
 Typically, I prefer built-in solutions, however, after conducting research I made following decisions:
 
-- Picked Handfire over System.Timers for retry support
-- Picked MailKit instead of SmtpClient as SmtpClient is becoming obsolete
+- Picked `Hangfire` over `System.Timers` for retry support
+- Picked `MailKit` instead of `SmtpClient` as it is becoming obsolete
