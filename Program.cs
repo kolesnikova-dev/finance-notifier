@@ -49,7 +49,7 @@ public class Program
         // 3) pass into emailSender
     }
 
-    private static string? LoadEnv()
+    public static string? LoadEnv()
     {
         Env.Load();
         string? dbConn = Environment.GetEnvironmentVariable("FINANCE_NOTIFIER_CONN_STRING");
