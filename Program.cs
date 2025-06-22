@@ -1,6 +1,9 @@
 ﻿using System.Drawing;
+
 using DotNetEnv;
+
 using Hangfire;
+
 using Pastel;
 
 public class Program
@@ -11,16 +14,19 @@ public class Program
     {
         string? dbConn = LoadEnv();
         GlobalConfiguration.Configuration
-                            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-                            .UseColouredConsoleLogProvider()
-                            .UseSimpleAssemblyNameTypeSerializer()
-                            .UseRecommendedSerializerSettings()
-                            .UseSqlServerStorage(dbConn);
+                          .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                          .UseColouredConsoleLogProvider()
+                          .UseSimpleAssemblyNameTypeSerializer()
+                          .UseRecommendedSerializerSettings()
+                          .UseSqlServerStorage(dbConn);
+
+        // Print starting log
+        BackgroundJob.Enqueue(() => Start());
 
         // Each week on Sunday at 6AM run a job:
         // RecurringJob.AddOrUpdate("scrape", () => scraperFormatter.Scrape(), "0 6 * * SUN");
         BackgroundJob.Enqueue(() => RunRecurringJob());
-        
+
         // keep server running until it is manually stopped
         using (var server = new BackgroundJobServer())
         {
@@ -31,8 +37,8 @@ public class Program
     public static async Task RunRecurringJob()
     {
 
-        // Print starting log
-        Start();
+
+
 
         // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
         // get information
