@@ -1,15 +1,17 @@
 ﻿using System.Drawing;
 
+using Pastel;
+
 using DotNetEnv;
 
 using Hangfire;
 
-using Pastel;
+namespace FinanceNotifier;
+
+using FinanceNotifier.Src;
 
 public class Program
 {
-    public static readonly List<string> scrapeUrls = ["https://www.pgim.com/us/en/institutional/about-us/newsroom/press-releases"];
-
     public static void Main(string[] args)
     {
         string? dbConn = LoadEnv();
@@ -28,21 +30,15 @@ public class Program
         BackgroundJob.Enqueue(() => RunRecurringJob());
 
         // keep server running until it is manually stopped
-        using (var server = new BackgroundJobServer())
-        {
-            Console.ReadLine();
-        }
+        using var server = new BackgroundJobServer();
+        Console.ReadLine();
     }
 
     public static async Task RunRecurringJob()
     {
-
-
-
-
         // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
         // get information
-        DataScraperFormatter scraperFormatter = new(scrapeUrls);
+        DataScraperFormatter scraperFormatter = new(ScraperUrls.FinanceUrls);
         Dictionary<string, string> data = await scraperFormatter.Scrape();
 
         Console.WriteLine("Data received: ");
