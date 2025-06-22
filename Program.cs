@@ -39,10 +39,10 @@ public class Program
         // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
         // get information
         DataScraperFormatter scraperFormatter = new(ScraperUrls.FinanceUrls);
-        Dictionary<string, string> data = await scraperFormatter.Scrape();
+        List<ArticleData> scrapedData = await scraperFormatter.Scrape();
 
         Console.WriteLine("Data received: ");
-        Console.WriteLine(data);
+        Console.WriteLine(scrapedData);
         // 2) pass the httpClient and the formatted data into GeminiFlashSummarizer
         // get information
 
@@ -55,7 +55,7 @@ public class Program
         string? dbConn = Environment.GetEnvironmentVariable("FINANCE_NOTIFIER_CONN_STRING");
         if (dbConn == "")
         {
-            throw new Exception("Failed to connect to SQLEXPRESS server.".Pastel(Color.OrangeRed));
+            throw new HighlightedException("Failed to connect to SQLEXPRESS server.");
         }
 
         return dbConn;
