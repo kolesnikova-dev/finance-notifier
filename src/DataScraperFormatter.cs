@@ -11,27 +11,27 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
 {
     private readonly Dictionary<string, string> _urls = urls;
 
-    public async Task<Dictionary<string, string>> Scrape()
+    public async Task<List<ArticleData>> Scrape()
     {
-        // using HttpClient client = new();
-        Dictionary<string, string> returnData = new();
+        List<ArticleData> scrapedArticles = new();
 
         foreach (KeyValuePair<string, string> url in _urls)
         {
             switch (url.Key)
             {
                 case "PGIM-Press-Release":
-                    ScrapePGIMPressReleasePage(url.Value);
+                    ArticleData article = ScrapePGIMPressReleasePage(url.Value);
+                    scrapedArticles.Add(article);
                     break;
                 default:
                     throw new Exception("Could not identify the urls");
             }
         }
 
-        return returnData;
+        return scrapedArticles;
     }
 
-    public static KeyValuePair<string, string> ScrapePGIMPressReleasePage(string url)
+    public static ArticleData ScrapePGIMPressReleasePage(string url)
     {
         try
         {
@@ -43,7 +43,7 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
             var anchors = htmlDoc.DocumentNode.SelectNodes("//a[contains(@class, 'cmp-cta__link-wrapper')]");
             if (anchors == null || anchors.Count == 0)
             {
-                throw new Exception("Anchors are null".Pastel(Color.OrangeRed));
+                throw new HighlightedException("Anchors are null");
             }
 
 
@@ -54,36 +54,67 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
             foreach (var node in anchors)
             {
                 // check type and date (published within the last week)
-                if (node.NodeType == HtmlNodeType.Element && IsPublishedWithinLastWeek(node))
+                if (node.NodeType == HtmlNodeType.Element)
                 {
-                    // click on that one
-                    Console.WriteLine(node.OuterHtml);
-
+                    DateTime? datePublished = GetPublishedDate(node);
+                    if (datePublished != null && IsPublishedWithinLastWeek(datePublished.Value))
+                    {
+                        // click on that one
+                        string href = node.GetAttributeValue("href", "");
+                        Console.WriteLine("href: ", href);
+                    }
                 }
             }
 
-            // var response = await client.GetAsync(url);
-            // response.EnsureSuccessStatusCode();
-            // var dataJson = await response.Content.ReadAsStringAsync();
-            // var parsedDoc = JsonDocument.Parse(dataJson);
-            // var prettified = JsonSerializer.Serialize(parsedDoc.RootElement, new JsonSerializerOptions { WriteIndented = true });
-            // returnData.Add("header", prettified);
-
-            // should return a key:value pair - header:content
+            var pgimArticle = new ArticleData();
+            return pgimArticle;
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine("Something went wrong with " + url + ". " + ex.Message);
+            Console.WriteLine($"Something went wrong with {url}: {ex.Message}");
             throw;
         }
     }
 
-    public static bool IsPublishedWithinLastWeek(HtmlNode node)
+    public static DateTime? GetPublishedDate(HtmlNode node)
     {
         // Extract 'data-cmp-data-layer' attribute
+        string dataCmpDataLayerAttribute = node.Attributes["data-cmp-data-layer"].Value
+        ?? throw new HighlightedException("Could not find 'data-cmp-data-layer' attribute");
+
         // Decode HTML entities
-        // Parse the decoded string using System.Text.Json
-        // Extract the publishDate field
-        return true;
+        string decodedData = System.Net.WebUtility.HtmlDecode(dataCmpDataLayerAttribute);
+
+        try
+        {
+            // Parse the decoded string using System.Text.Json
+            var parsedDoc = JsonDocument.Parse(decodedData);
+            // Extract the publishDate field
+            var root = parsedDoc.RootElement;
+            foreach (var property in root.EnumerateObject())
+            {
+                var entry = property.Value;
+
+                string publishDateString = entry.GetProperty("publishDate").GetString()
+                ?? throw new HighlightedException("Could not get publishDate");
+
+                if (!DateTime.TryParse(publishDateString, out DateTime publishDate))
+                {
+                    throw new HighlightedException($"Failed to parse publishDate: {publishDateString}");
+                }
+                return publishDate;
+            }
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine("Failed to parse JSON: " + ex.Message);
+        }
+
+        return null;
+    }
+
+    public static bool IsPublishedWithinLastWeek(DateTime publishDate)
+    {
+        return (DateTime.Today - publishDate).TotalDays < 7;
     }
 }
