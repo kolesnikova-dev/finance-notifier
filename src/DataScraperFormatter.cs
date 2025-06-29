@@ -30,9 +30,11 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
 
     public async Task<List<ArticleData>> ScrapePGIMPressReleasePage(string url)
     {
+        IPage page = await GetNewPlaywrightPage();
+        string baseUrl = "https://www.pgim.com";
         try
         {
-            IPage page = await GetNewPlaywrightPage();
+
             // Go to the page
             await page.GotoAsync(url);
 
@@ -49,7 +51,7 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
                 throw new HighlightedException("No articles found");
             }
 
-            List<string> recentArticlesUrls = new();
+            List<ArticleData> recentPgimArticles = new();
             // Loop over list items to identify recent articles
             foreach (var li in listItems)
             {
@@ -60,18 +62,18 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
                 {
                     // Click on a recent article
                     string href = await anchor.GetAttributeAsync("href") ?? string.Empty;
-                    recentArticlesUrls.Add(href);
+                    ArticleData article = new();
+
+                    string header = await anchor.GetAttributeAsync("title") ?? string.Empty;
+                    string splitHeader = header.Split(" - ")[0];
+                    article.Header = splitHeader;
+
+                    article.PublishDate = datePublished.Value;
+                    article.Url = $"{baseUrl}{href}";
+                    string articleContent = await GetPgimArticleContent(article.Url);
+                    article.Content = articleContent;
+                    recentPgimArticles.Add(article);
                 }
-            }
-            if (recentArticlesUrls.Count == 0)
-            {
-                Console.WriteLine("No articles within the requested timeframe.");
-            }
-            List<ArticleData> recentPgimArticles = new();
-            foreach (var articleUrl in recentArticlesUrls)
-            {
-                ArticleData article = await GetPgimArticleData(articleUrl);
-                recentPgimArticles.Add(article);
             }
             return recentPgimArticles;
         }
@@ -79,6 +81,10 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
         {
             Console.WriteLine($"Something went wrong with {url}: {ex.Message}");
             throw;
+        }
+        finally
+        {
+            await page.CloseAsync();
         }
     }
 
@@ -109,14 +115,13 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
         return (DateTime.Today - publishDate).TotalDays < 7;
     }
 
-    public async Task<ArticleData> GetPgimArticleData(string articleUrl)
+    public async Task<string> GetPgimArticleContent(string articleUrl)
     {
-        Console.WriteLine($"{articleUrl}");
-        ArticleData article = new();
         IPage page = await GetNewPlaywrightPage();
         await page.GotoAsync(articleUrl);
-
-        return article;
+        string content = "";
+        await page.CloseAsync();
+        return content;
     }
 
     public async Task<IPage> GetNewPlaywrightPage()
