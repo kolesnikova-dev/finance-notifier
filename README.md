@@ -19,6 +19,8 @@ C# (.NET)
 
 - `Hangfire` for reliable background scheduling
 
+- `Playwright` for scraping SPAs with dynamic content
+
 - `HtmlAgilityPack` for HTML parsing
 
 - `HttpClient` for data fetching
