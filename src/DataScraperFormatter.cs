@@ -1,6 +1,9 @@
 using System.Text.Json;
-
+using System.Net;
 using Microsoft.Playwright;
+using Microsoft.SqlServer.Server;
+
+using HtmlAgilityPack;
 
 namespace FinanceNotifier.Src;
 
@@ -118,10 +121,59 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
     public async Task<string> GetPgimArticleContent(string articleUrl)
     {
         IPage page = await GetNewPlaywrightPage();
-        await page.GotoAsync(articleUrl);
-        string content = "";
-        await page.CloseAsync();
+        string content = string.Empty;
+        try
+        {
+            await page.GotoAsync(articleUrl);
+            var allContentDivs = await page.QuerySelectorAllAsync(".cmp-text");
+
+            if (allContentDivs.Count > 1)
+            {
+                // Get all divs except the last (the last div is the footer)
+                var contentDivs = allContentDivs.Take(allContentDivs.Count - 1).ToList();
+
+                foreach (var contentDiv in contentDivs)
+                {
+                    string dataCmpDataLayer = await contentDiv.GetAttributeAsync("data-cmp-data-layer") ?? string.Empty;
+                    content += ExtractAndStripHtml(dataCmpDataLayer);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new HighlightedException($"Something went wrong when scraping from {articleUrl}. Exception: {ex.Message}");
+        }
+        finally
+        {
+            await page.CloseAsync();
+        }
         return content;
+    }
+
+    public string ExtractAndStripHtml(string jsonContent)
+    {
+        using var doc = JsonDocument.Parse(jsonContent);
+        var root = doc.RootElement;
+
+        foreach (var prop in root.EnumerateObject())
+        {
+            var innerObj = prop.Value;
+            if (innerObj.TryGetProperty("xdm:text", out var htmlElement))
+            {
+                var htmlString = htmlElement.GetString() ?? string.Empty;
+
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(htmlString);
+                string rawText = htmlDoc.DocumentNode.InnerText;
+
+                // Decode &nbsp;
+                string cleanText = WebUtility.HtmlDecode(rawText);
+
+                return cleanText.Trim();
+            }
+        }
+
+        return "";
     }
 
     public async Task<IPage> GetNewPlaywrightPage()
