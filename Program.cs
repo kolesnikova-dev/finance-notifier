@@ -42,7 +42,16 @@ public class Program
         List<ArticleData> scrapedData = await scraperFormatter.Scrape();
 
         Console.WriteLine("Data received: ");
-        Console.WriteLine(scrapedData);
+        Console.WriteLine("-----------------");
+        foreach (var article in scrapedData)
+        {
+            Console.WriteLine($"Header: {article.Header}");
+            Console.WriteLine($"Content: {article.Content}");
+            Console.WriteLine($"URL: {article.Url}");
+            Console.WriteLine($"Summary: {article.Summary}");
+            Console.WriteLine($"Publish Date: {article.PublishDate}");
+            Console.WriteLine("------------------");
+        }
         // 2) pass the httpClient and the formatted data into GeminiFlashSummarizer
         // get information
 
