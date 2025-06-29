@@ -85,8 +85,7 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"Something went wrong with {url}: {ex.Message}");
-            throw;
+            throw new HighlightedException($"Something went wrong with {url}: {ex.Message}");
         }
         finally
         {
