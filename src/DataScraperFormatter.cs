@@ -1,7 +1,6 @@
 using System.Text.Json;
 using System.Net;
 using Microsoft.Playwright;
-using Microsoft.SqlServer.Server;
 
 using HtmlAgilityPack;
 
@@ -15,6 +14,7 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
     {
         List<ArticleData> scrapedArticles = new();
 
+        // Loop over provided urls and assign relevant scraping method
         foreach (KeyValuePair<string, string> url in _urls)
         {
             switch (url.Key)
@@ -63,18 +63,21 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
                 DateTime? datePublished = await GetPublishedDate(li);
                 if (anchor != null && datePublished != null && IsPublishedWithinLastWeek(datePublished.Value))
                 {
-                    // Click on a recent article
-                    string href = await anchor.GetAttributeAsync("href") ?? string.Empty;
+                    // Initialize a new ArticleData instance
                     ArticleData article = new();
+                    // Get attributes, such as 'href', 'header' and assign publish date
+                    string href = await anchor.GetAttributeAsync("href") ?? string.Empty;
 
                     string header = await anchor.GetAttributeAsync("title") ?? string.Empty;
                     string splitHeader = header.Split(" - ")[0];
                     article.Header = splitHeader;
 
                     article.PublishDate = datePublished.Value;
+                    // Construct a full url and get article content
                     article.Url = $"{baseUrl}{href}";
                     string articleContent = await GetPgimArticleContent(article.Url);
                     article.Content = articleContent;
+
                     recentPgimArticles.Add(article);
                 }
             }
