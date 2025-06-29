@@ -23,7 +23,7 @@ public class Program
                           .UseSqlServerStorage(dbConn);
 
         // Print starting log
-        BackgroundJob.Enqueue(() => Start());
+        Start();
 
         // Each week on Sunday at 6AM run a job:
         // RecurringJob.AddOrUpdate("scrape", () => scraperFormatter.Scrape(), "0 6 * * SUN");
@@ -36,24 +36,41 @@ public class Program
 
     public static async Task RunRecurringJob()
     {
-        // 1) pass the httpClient and scrapeUrls into dataScraperFormatter
-        // get information
+        // 1) pass scrapeUrls into DataScraperFormatter
+        // await articles
         DataScraperFormatter scraperFormatter = new(ScraperUrls.FinanceUrls);
-        List<ArticleData> scrapedData = await scraperFormatter.Scrape();
-
-        Console.WriteLine("Data received: ");
-        Console.WriteLine("-----------------");
-        foreach (var article in scrapedData)
+        Console.WriteLine("Scraping articles...".Pastel(Color.Blue));
+        List<ArticleData> articles = await scraperFormatter.Scrape();
+        if (articles != null)
         {
-            Console.WriteLine($"Header: {article.Header}");
-            Console.WriteLine($"Content: {article.Content}");
-            Console.WriteLine($"URL: {article.Url}");
-            Console.WriteLine($"Summary: {article.Summary}");
-            Console.WriteLine($"Publish Date: {article.PublishDate}");
-            Console.WriteLine("------------------");
+            // 2) pass the articles into GeminiFlashSummarizer
+            // get summaries concurrently
+            Console.WriteLine("Data received. Summarizing...".Pastel(Color.Blue));
+            GeminiFlashSummarizer geminiFlashSummarizer = new();
+            var summarizationTasks = articles
+                .Select(article => new
+                {
+                    Article = article,
+                    SummaryTask = geminiFlashSummarizer.Summarize(article.Content)
+                })
+                .ToList();
+            await Task.WhenAll(summarizationTasks.Select(t => t.SummaryTask));
+            foreach (var item in summarizationTasks)
+            {
+                item.Article.Summary = item.SummaryTask.Result;
+            }
+
+            foreach (var article in articles)
+            {
+                Console.WriteLine("------------------");
+                Console.WriteLine($"Header: {article.Header}");
+                Console.WriteLine($"Content: {article.Content.Length}");
+                Console.WriteLine($"Summary: {article.Summary.Length}");
+                Console.WriteLine($"URL: {article.Url}");
+                Console.WriteLine($"Publish Date: {article.PublishDate}");
+                Console.WriteLine("------------------");
+            }
         }
-        // 2) pass the httpClient and the formatted data into GeminiFlashSummarizer
-        // get information
 
         // 3) pass into emailSender
     }
