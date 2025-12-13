@@ -1,4 +1,4 @@
-namespace FinanceNotifier.Src;
+namespace FinanceNotifier.Src.Core;
 
 public class ArticleData
 {

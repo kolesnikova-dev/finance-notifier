@@ -1,6 +1,6 @@
 using GenerativeAI;
 
-namespace FinanceNotifier.Src;
+namespace FinanceNotifier.Src.Core;
 
 public class GeminiFlashSummarizer
 {
