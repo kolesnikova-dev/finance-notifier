@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Net;
+
 using Microsoft.Playwright;
 
 using HtmlAgilityPack;
@@ -46,7 +47,8 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
             {
                 State = WaitForSelectorState.Attached,
             });
-
+            IElementHandle listItemGroup = await page.QuerySelectorAsync(".cmp-search-list__item-group")
+        ?? throw new HighlightedException("Could not find '.cmp-search-list__item-group'");
             // Get list items
             var listItems = await page.QuerySelectorAllAsync("li.cmp-searchresult-item");
             if (listItems == null || listItems.Count == 0)
@@ -58,7 +60,7 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
             // Loop over list items to identify recent articles
             foreach (var li in listItems)
             {
-                var anchor = await li.QuerySelectorAsync("a.cmp-searchresult-link");
+                var anchor = await li.QuerySelectorAsync("a.cmp-searchresult-link-wrapper") ?? throw new HighlightedException("Could not find 'a.cmp-searchresult-link-wrapper'");
                 // Get article's publish date
                 DateTime? datePublished = await GetPublishedDate(li);
                 if (anchor != null && datePublished != null && IsPublishedWithinLastWeek(datePublished.Value))
@@ -129,11 +131,11 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
         {
             await page.GotoAsync(articleUrl);
             var allContentDivs = await page.QuerySelectorAllAsync(".cmp-text");
-
             if (allContentDivs.Count > 1)
             {
                 // Get all divs except the last (the last div is the footer)
                 var contentDivs = allContentDivs.Take(allContentDivs.Count - 1).ToList();
+
 
                 foreach (var contentDiv in contentDivs)
                 {
