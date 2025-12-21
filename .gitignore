@@ -2,3 +2,14 @@
 **/obj
 
 **/.env
+
+# Debug directories
+Debug/
+Release/
+**/Debug/
+**/Release/
+**/debug/
+**/release/
+
+# .NET build outputs
+**/net*/
