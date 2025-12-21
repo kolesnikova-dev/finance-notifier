@@ -47,6 +47,15 @@ Parameters:
 
 - Email delivery via `MailKit`
 
+## Environment Configuration
+Critical: Each module folder requires a .env file with the following variables:
+
+Required Environment Variables:
+```text
+GOOGLE_GEMINI_FLASH_API_KEY=your_gemini_api_key_here
+FINANCE_NOTIFIER_CONN_STRING=your_database_connection_string_here
+```
+
 ## Future Development
 - React Frontend: Separate client application to display articles
 
