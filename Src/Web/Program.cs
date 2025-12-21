@@ -21,7 +21,7 @@ public class Program
 
 
         // Print starting log
-        Start();
+        Greet();
 
         Task.Run(async () =>
         {
@@ -47,7 +47,13 @@ public class Program
 
         // before anything else, I have to verify that that the url is still valid
         // perfrom a health check, if you're getting 404, return some with an error message
-
+        Console.WriteLine("Validating URLs...".Pastel(Color.Blue));
+        bool areValidated = await UrlValidator.ValidateAsync(ScraperUrls.FinanceUrls);
+        if (!areValidated)
+        {
+            Console.WriteLine("Error: One or more URLs are unhealthy (404 or other error)".Pastel(Color.Red));
+            return;
+        }
         // 1) pass scrapeUrls into DataScraperFormatter
         // await articles
         DataScraperFormatter scraperFormatter = new(ScraperUrls.FinanceUrls);
@@ -117,10 +123,10 @@ public class Program
         return dbConn;
     }
 
-    public static void Start()
+    public static void Greet()
     {
         Console.WriteLine("===========================".Pastel(Color.DarkBlue));
-        Console.WriteLine("Hangfire Server started.\nPress Enter to exit...".Pastel(Color.DarkBlue));
+        Console.WriteLine("Welcome to Finance Notifier".Pastel(Color.DarkBlue));
         Console.WriteLine("===========================".Pastel(Color.DarkBlue));
     }
 }
