@@ -40,15 +40,13 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
         {
 
             // Go to the page
-            await page.GotoAsync(url);
+            await page.GotoAsync(url); // what if you are receiving 404??
 
             // Wait for the content to load
             await page.WaitForSelectorAsync(".cmp-search-list__item-group", new PageWaitForSelectorOptions
             {
                 State = WaitForSelectorState.Attached,
             });
-            IElementHandle listItemGroup = await page.QuerySelectorAsync(".cmp-search-list__item-group")
-        ?? throw new HighlightedException("Could not find '.cmp-search-list__item-group'");
             // Get list items
             var listItems = await page.QuerySelectorAllAsync("li.cmp-searchresult-item");
             if (listItems == null || listItems.Count == 0)

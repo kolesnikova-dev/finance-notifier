@@ -2177,7 +2177,7 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "Core/1.0.0": {
+      "FinanceNotifier.Core/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -2191,10 +2191,10 @@
           "Pastel": "6.0.1"
         },
         "compile": {
-          "bin/placeholder/Core.dll": {}
+          "bin/placeholder/FinanceNotifier.Core.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Core.dll": {}
+          "bin/placeholder/FinanceNotifier.Core.dll": {}
         }
       }
     }
@@ -7247,16 +7247,16 @@
         "system.xml.xdocument.nuspec"
       ]
     },
-    "Core/1.0.0": {
+    "FinanceNotifier.Core/1.0.0": {
       "type": "project",
-      "path": "../Core/Core.csproj",
-      "msbuildProject": "../Core/Core.csproj"
+      "path": "../Core/FinanceNotifier.Core.csproj",
+      "msbuildProject": "../Core/FinanceNotifier.Core.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "Core >= 1.0.0",
       "DotNetEnv >= 3.1.1",
+      "FinanceNotifier.Core >= 1.0.0",
       "Google_GenerativeAI >= 2.7.0",
       "Hangfire.Core >= 1.8.20",
       "Hangfire.SqlServer >= 1.8.20",
@@ -7272,9 +7272,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Scheduler\\Scheduler.csproj",
-      "projectName": "Scheduler",
-      "projectPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Scheduler\\Scheduler.csproj",
+      "projectUniqueName": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Scheduler\\FinanceNotifier.Scheduler.csproj",
+      "projectName": "FinanceNotifier.Scheduler",
+      "projectPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Scheduler\\FinanceNotifier.Scheduler.csproj",
       "packagesPath": "C:\\Users\\nika\\.nuget\\packages\\",
       "outputPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Scheduler\\obj\\",
       "projectStyle": "PackageReference",
@@ -7291,8 +7291,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\Core.csproj": {
-              "projectPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\Core.csproj"
+            "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\FinanceNotifier.Core.csproj": {
+              "projectPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\FinanceNotifier.Core.csproj"
             }
           }
         }

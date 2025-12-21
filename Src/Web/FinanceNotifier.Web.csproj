@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
   <OutputType>Exe</OutputType> 
@@ -9,8 +9,15 @@
 
     <ItemGroup>
     <!-- Reference shared functionality -->
-    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Core\FinanceNotifier.Core.csproj" />
   </ItemGroup>
+
+
+<Target Name="CopyEnvFileBeforeBuild" BeforeTargets="Build">
+  <Copy SourceFiles="..\..\.env" 
+        DestinationFiles="$(OutDir).env" 
+        Condition="!Exists('$(OutDir).env')" />
+</Target>
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />

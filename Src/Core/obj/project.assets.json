@@ -7246,9 +7246,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\Core.csproj",
-      "projectName": "Core",
-      "projectPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\Core.csproj",
+      "projectUniqueName": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\FinanceNotifier.Core.csproj",
+      "projectName": "FinanceNotifier.Core",
+      "projectPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\FinanceNotifier.Core.csproj",
       "packagesPath": "C:\\Users\\nika\\.nuget\\packages\\",
       "outputPath": "S:\\projects\\csharp\\FinanceNotifier\\Src\\Core\\obj\\",
       "projectStyle": "PackageReference",

@@ -1,11 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+  <OutputType>Exe</OutputType> 
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+    <ItemGroup>
+    <!-- Reference shared functionality -->
+    <ProjectReference Include="..\Core\FinanceNotifier.Core.csproj" />
+  </ItemGroup>
+
+    <ItemGroup>
+    <!-- Copy .env from solution root to output -->
+    <Content Include="..\..\.env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>.env</Link>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />

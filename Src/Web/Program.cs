@@ -4,9 +4,7 @@ using Pastel;
 
 using DotNetEnv;
 
-using Hangfire;
-
-namespace FinanceNotifier.Src.Web;
+namespace FinanceNotifier.Web;
 
 using System.Diagnostics;
 
@@ -17,30 +15,15 @@ public class Program
     public static void Main(string[] args)
     {
         string? dbConn = LoadEnv();
-        GlobalConfiguration.Configuration
-                          .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-                          .UseColouredConsoleLogProvider()
-                          .UseSimpleAssemblyNameTypeSerializer()
-                          .UseRecommendedSerializerSettings()
-                          .UseSqlServerStorage(dbConn);
 
         // Print starting log
         Start();
 
-        // // Each week on Sunday at 6AM run a job:
-        // // RecurringJob.AddOrUpdate("scrape", () => scraperFormatter.Scrape(), "0 6 * * SUN");
-        // BackgroundJob.Enqueue(() => RunRecurringJob());
-
-        // // keep server running until it is manually stopped
-        // using var server = new BackgroundJobServer();
-        // Console.ReadLine();
-
-        // Run the job synchronously instead of as a background job
         Task.Run(async () =>
         {
             try
             {
-                await RunRecurringJob();
+                await RunMainWorkflowAsync();
                 Console.WriteLine("Job completed successfully!".Pastel(Color.DarkBlue));
             }
             catch (Exception ex)
@@ -55,7 +38,7 @@ public class Program
         }).Wait(); // Wait for the task to complete
     }
 
-    public static async Task RunRecurringJob()
+    public static async Task RunMainWorkflowAsync()
     {
         // 1) pass scrapeUrls into DataScraperFormatter
         // await articles
@@ -63,6 +46,11 @@ public class Program
         Console.WriteLine("Scraping articles...".Pastel(Color.Blue));
         List<ArticleData> articles = await scraperFormatter.Scrape();
         Console.WriteLine($"Articles count: {(articles == null ? "null" : articles.Count.ToString())}".Pastel(Color.Blue));
+        if (articles == null || articles?.Count == 0)
+        {
+            Console.WriteLine("No recent articles found.");
+            return;
+        }
         if (articles != null)
         {
             foreach (var article in articles)
