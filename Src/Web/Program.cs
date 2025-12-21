@@ -8,13 +8,17 @@ namespace FinanceNotifier.Web;
 
 using System.Diagnostics;
 
-using FinanceNotifier.Src.Core;
+using FinanceNotifier.Core;
 
 public class Program
 {
     public static void Main(string[] args)
     {
+        // validate environment variables
+        // enable cors
+        // where do controllers come in? idfk
         string? dbConn = LoadEnv();
+
 
         // Print starting log
         Start();
@@ -40,6 +44,10 @@ public class Program
 
     public static async Task RunMainWorkflowAsync()
     {
+
+        // before anything else, I have to verify that that the url is still valid
+        // perfrom a health check, if you're getting 404, return some with an error message
+
         // 1) pass scrapeUrls into DataScraperFormatter
         // await articles
         DataScraperFormatter scraperFormatter = new(ScraperUrls.FinanceUrls);

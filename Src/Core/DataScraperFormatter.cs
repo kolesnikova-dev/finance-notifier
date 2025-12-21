@@ -5,7 +5,7 @@ using Microsoft.Playwright;
 
 using HtmlAgilityPack;
 
-namespace FinanceNotifier.Src.Core;
+namespace FinanceNotifier.Core;
 
 public class DataScraperFormatter(Dictionary<string, string> urls)
 {
