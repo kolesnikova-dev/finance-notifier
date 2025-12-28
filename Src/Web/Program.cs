@@ -19,10 +19,6 @@ public class Program
         // where do controllers come in? idfk
         string? dbConn = LoadEnv();
 
-
-        // Print starting log
-        Greet();
-
         Task.Run(async () =>
         {
             try
@@ -121,12 +117,5 @@ public class Program
         dbConn = Environment.GetEnvironmentVariable("FINANCE_NOTIFIER_CONN_STRING") ?? throw new HighlightedException("Failed to connect to SQLEXPRESS server.");
 
         return dbConn;
-    }
-
-    public static void Greet()
-    {
-        Console.WriteLine("===========================".Pastel(Color.DarkBlue));
-        Console.WriteLine("Welcome to Finance Notifier".Pastel(Color.DarkBlue));
-        Console.WriteLine("===========================".Pastel(Color.DarkBlue));
     }
 }
