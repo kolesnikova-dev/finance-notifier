@@ -7,7 +7,12 @@ using HtmlAgilityPack;
 
 namespace FinanceNotifier.Core;
 
-public class DataScraperFormatter(Dictionary<string, string> urls)
+public interface IDataScraperFormatter
+{
+    Task<List<ArticleData>> Scrape();
+}
+
+public class DataScraperFormatter(Dictionary<string, string> urls) : IDataScraperFormatter
 {
     private readonly Dictionary<string, string> _urls = urls;
 
