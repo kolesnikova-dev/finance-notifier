@@ -2,7 +2,12 @@ using GenerativeAI;
 
 namespace FinanceNotifier.Core;
 
-public class GeminiFlashSummarizer
+public interface ISummarizer
+{
+    Task<string> Summarize(string content);
+}
+
+public class GeminiFlashSummarizer : ISummarizer
 {
     private readonly string _apiKey;
     private readonly GoogleAi _googleAI;

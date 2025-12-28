@@ -12,14 +12,6 @@
     <ProjectReference Include="..\Core\FinanceNotifier.Core.csproj" />
   </ItemGroup>
 
-    <ItemGroup>
-    <!-- Copy .env from solution root to output -->
-    <Content Include="..\..\.env">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>.env</Link>
-    </Content>
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Google_GenerativeAI" Version="2.7.0" />
