@@ -10,7 +10,7 @@ namespace FinanceNotifier.Src.Scheduler;
 
 using System.Diagnostics;
 
-using FinanceNotifier.Src.Core;
+using FinanceNotifier.Core;
 
 public class Program
 {
