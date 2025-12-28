@@ -109,10 +109,8 @@ public class DataScraperFormatter(Dictionary<string, string> urls)
         }
         catch (JsonException ex)
         {
-            Console.WriteLine("Failed to parse JSON: " + ex.Message);
+            throw new HighlightedException("Failed to parse JSON: " + ex.Message);
         }
-
-        return null;
     }
 
     public bool IsPublishedWithinLastWeek(DateTime publishDate)
