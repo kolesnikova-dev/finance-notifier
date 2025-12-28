@@ -2,13 +2,17 @@ using System.Net.Http;
 
 namespace FinanceNotifier.Core;
 
-public class UrlValidator
+public interface IUrlValidator
+{
+    Task<bool> ValidateAsync(Dictionary<string, string> urls);
+}
+public class UrlValidator : IUrlValidator
 {
     private static readonly HttpClient _httpClient = new HttpClient
     {
         Timeout = TimeSpan.FromSeconds(15)
     };
-    public static async Task<bool> ValidateAsync(Dictionary<string, string> urls)
+    public async Task<bool> ValidateAsync(Dictionary<string, string> urls)
     {
         if (urls == null || urls.Count == 0)
             return false;
@@ -39,19 +43,16 @@ public class UrlValidator
                 // Verify status code
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"URL returned error: {(int)response.StatusCode} {response.StatusCode}");
-                    return false;
+                    throw new HighlightedException($"URL returned error: {(int)response.StatusCode} {response.StatusCode}");
                 }
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"HTTP error for {url.Value}: {ex.Message}");
-                return false;
+                throw new HighlightedException($"HTTP error for {url.Value}: {ex.Message}");
             }
             catch (TaskCanceledException)
             {
-                Console.WriteLine($"Timeout accessing URL");
-                return false;
+                throw new HighlightedException($"Timeout accessing URL");
             }
             catch (Exception ex)
             {
