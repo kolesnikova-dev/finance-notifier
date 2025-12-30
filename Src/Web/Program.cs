@@ -4,7 +4,12 @@ using System.Diagnostics;
 
 using DotNetEnv;
 
+// Create builder
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure host settings
+builder.WebHost.UseUrls("http://localhost:5151");
+builder.Logging.AddFilter("Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware", LogLevel.None);
 
 // Load environment variables
 if (Debugger.IsAttached)
@@ -38,13 +43,13 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Register your Core services
+// Register Core services
 builder.Services.AddScoped<ISummarizer, GeminiFlashSummarizer>();
 builder.Services.AddScoped<IUrlValidator, UrlValidator>();
 builder.Services.AddScoped<IDataScraperFormatter>(sp =>
     new DataScraperFormatter(ScraperUrls.FinanceUrls));
 
-// Enable CORS (adjust for your needs)
+// Enable CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -53,9 +58,18 @@ builder.Services.AddCors(options =>
                         .AllowAnyHeader());
 });
 
-builder.WebHost.UseUrls("http://localhost:5151");
-
+// Build application
 var app = builder.Build();
+
+// CORS configuration first
+app.UseCors("AllowAll");
+app.UseHttpsRedirection();
+app.UseAuthorization();
+
+// Health check endpoint
+app.MapGet("/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
+
+app.MapControllers();
 
 // Configure the HTTP pipeline
 if (app.Environment.IsDevelopment())
@@ -68,12 +82,4 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors("AllowAll");
-app.UseHttpsRedirection();
-app.UseAuthorization();
-
-// Health check endpoint
-app.MapGet("/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
-
-app.MapControllers();
 app.Run();
