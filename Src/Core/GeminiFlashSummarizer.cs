@@ -1,6 +1,6 @@
 using GenerativeAI;
 
-namespace FinanceNotifier.Core;
+namespace FinanceScraper.Core;
 
 public interface ISummarizer
 {

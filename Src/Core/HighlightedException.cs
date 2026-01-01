@@ -2,7 +2,7 @@ using System.Drawing;
 
 using Pastel;
 
-namespace FinanceNotifier.Core;
+namespace FinanceScraper.Core;
 
 public class HighlightedException : Exception
 {

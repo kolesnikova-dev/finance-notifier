@@ -6,11 +6,11 @@ using DotNetEnv;
 
 using Hangfire;
 
-namespace FinanceNotifier.Src.Scheduler;
+namespace FinanceScraper.Src.Scheduler;
 
 using System.Diagnostics;
 
-using FinanceNotifier.Core;
+using FinanceScraper.Core;
 
 public class Program
 {
@@ -105,7 +105,7 @@ public class Program
             if (File.Exists(envPath))
             {
                 Env.Load(envPath);
-                dbConn = Environment.GetEnvironmentVariable("FINANCE_NOTIFIER_CONN_STRING");
+                dbConn = Environment.GetEnvironmentVariable("FINANCE_Scraper_CONN_STRING");
 
                 if (!string.IsNullOrEmpty(dbConn))
                 {
@@ -116,7 +116,7 @@ public class Program
         }
 
         Env.Load();
-        dbConn = Environment.GetEnvironmentVariable("FINANCE_NOTIFIER_CONN_STRING") ?? throw new HighlightedException("Failed to connect to SQLEXPRESS server.");
+        dbConn = Environment.GetEnvironmentVariable("FINANCE_Scraper_CONN_STRING") ?? throw new HighlightedException("Failed to connect to SQLEXPRESS server.");
 
         return dbConn;
     }

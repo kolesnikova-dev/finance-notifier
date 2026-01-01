@@ -1,16 +1,18 @@
-﻿using FinanceNotifier.Core;
+﻿using FinanceScraper.Core;
 
 using System.Diagnostics;
 
 using DotNetEnv;
 
+// I will add proper variable validation next ------------------------------------------
+var dbConn = Environment.GetEnvironmentVariable("FINANCE_SCRAPER_CONN_STRING")
+    ?? throw new InvalidOperationException("FINANCE_SCRAPER_CONN_STRING environment variable is required.");
+var aspNetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")
+    ?? throw new InvalidOperationException("ASPNETCORE_URLS environment variable is required.");
+var port = Environment.GetEnvironmentVariable("PORT");
+
 // Create builder
 var builder = WebApplication.CreateBuilder(args);
-
-// Configure host settings
-builder.WebHost.UseUrls("http://localhost:5151");
-builder.Logging.AddFilter("Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware", LogLevel.None);
-
 // Load environment variables
 if (Debugger.IsAttached)
 {
@@ -24,10 +26,21 @@ else
 {
     Env.Load();
 }
+// Configure host settings
+builder.Logging.AddFilter("Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware", LogLevel.None);
 
-// Validate required environment variable
-var dbConn = Environment.GetEnvironmentVariable("FINANCE_NOTIFIER_CONN_STRING")
-    ?? throw new InvalidOperationException("FINANCE_NOTIFIER_CONN_STRING environment variable is required.");
+if (!string.IsNullOrEmpty(port))
+{
+    // For Azure/Railway/Heroku
+    builder.WebHost.UseUrls($"http://*:{port}");
+}
+else if (aspNetCoreUrls != null)
+{
+    // Use environment variable if set
+    builder.WebHost.UseUrls(aspNetCoreUrls);
+}
+
+
 
 // Add services to DI container
 builder.Services.AddControllers();
@@ -37,7 +50,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "Finance Notifier API",
+        Title = "Finance Scraper API",
         Version = "v1",
         Description = "API for scraping and summarizing financial articles"
     });
@@ -77,7 +90,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Finance Notifier API v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Finance Scraper API v1");
         options.RoutePrefix = "swagger"; // Access at /swagger
     });
 }
