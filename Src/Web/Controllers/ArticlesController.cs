@@ -1,4 +1,4 @@
-using FinanceNotifier.Core;
+using FinanceScraper.Core;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +26,7 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public IActionResult Get()
     {
         try
         {

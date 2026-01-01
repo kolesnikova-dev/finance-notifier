@@ -1,6 +1,6 @@
 using System.Net.Http;
 
-namespace FinanceNotifier.Core;
+namespace FinanceScraper.Core;
 
 public interface IUrlValidator
 {

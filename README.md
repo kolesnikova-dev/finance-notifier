@@ -1,6 +1,6 @@
-# FinanceNotifier
+# FinanceScraper
 
-FinanceNotifier is a C#-based background service that scrapes important financial news, summarizes it using AI, and delivers it to my inbox weekly. The project has been refactored into a clean, modular architecture with a separate API layer for future frontend integration.
+FinanceScraper is a C#-based background service that scrapes important financial news, summarizes it using AI, and delivers it to my inbox weekly. The project has been refactored into a clean, modular architecture with a separate API layer for future frontend integration.
 
 ## Architecture
 The application is now structured as a modular monolith with clear separation of concerns:
@@ -53,7 +53,7 @@ Critical: Each module folder requires a .env file with the following variables:
 Required Environment Variables:
 ```text
 GOOGLE_GEMINI_FLASH_API_KEY=your_gemini_api_key_here
-FINANCE_NOTIFIER_CONN_STRING=your_database_connection_string_here
+FINANCE_Scraper_CONN_STRING=your_database_connection_string_here
 ```
 
 ## Future Development

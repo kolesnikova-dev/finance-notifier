@@ -5,7 +5,7 @@ using Microsoft.Playwright;
 
 using HtmlAgilityPack;
 
-namespace FinanceNotifier.Core;
+namespace FinanceScraper.Core;
 
 public interface IDataScraperFormatter
 {

@@ -1,4 +1,4 @@
-namespace FinanceNotifier.Core;
+namespace FinanceScraper.Core;
 
 public class ScraperUrls
 {
