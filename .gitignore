@@ -3,6 +3,8 @@
 
 **/.env
 
+**/*.db
+
 # Debug directories
 Debug/
 Release/
