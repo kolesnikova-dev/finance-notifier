@@ -2,17 +2,9 @@
 
 using System.Diagnostics;
 
+using Microsoft.Data.Sqlite;
+
 using DotNetEnv;
-
-// I will add proper variable validation next ------------------------------------------
-var dbConn = Environment.GetEnvironmentVariable("FINANCE_SCRAPER_CONN_STRING")
-    ?? throw new InvalidOperationException("FINANCE_SCRAPER_CONN_STRING environment variable is required.");
-var aspNetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")
-    ?? throw new InvalidOperationException("ASPNETCORE_URLS environment variable is required.");
-var port = Environment.GetEnvironmentVariable("PORT");
-
-// Create builder
-var builder = WebApplication.CreateBuilder(args);
 // Load environment variables
 if (Debugger.IsAttached)
 {
@@ -26,6 +18,21 @@ else
 {
     Env.Load();
 }
+// I will add proper variable validation next ------------------------------------------
+// aspNetCoreUrls is a placeholder for future full stack links
+string aspNetCoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")
+    ?? throw new InvalidOperationException("ASPNETCORE_URLS environment variable is required.");
+var port = Environment.GetEnvironmentVariable("PORT");
+string environment = Environment.GetEnvironmentVariable("ENVIRONMENT")
+ ?? throw new InvalidOperationException("ENVIRONMENT environment variable is required.");
+
+using var connection = new SqliteConnection($"Data Source=finance_scraper_{environment}.db");
+connection.Open();
+
+
+// Create builder
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
 // Configure host settings
 builder.Logging.AddFilter("Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware", LogLevel.None);
 
@@ -72,7 +79,7 @@ builder.Services.AddCors(options =>
 });
 
 // Build application
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // CORS configuration first
 app.UseCors("AllowAll");
